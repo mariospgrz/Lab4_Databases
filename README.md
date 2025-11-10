@@ -1,2 +1,1 @@
-Hi guys, lets do this lab 4 together. We are the best team!
-Testing commit
+The aim of this repository is to get familiar with SQL management with Java through our Databases module.
