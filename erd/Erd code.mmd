@@ -1,0 +1,50 @@
+erDiagram
+PLAYERS {
+INT player_id PK
+VARCHAR username
+VARCHAR email
+DATE registration_date
+INT total_wins
+INT total_losses
+}
+
+
+TOURNAMENTS {
+INT tournament_id PK
+VARCHAR name
+DATE start_date
+DATE end_date
+INT max_participants
+BOOLEAN is_open
+}
+
+
+PARTICIPANTS {
+INT participant_id PK
+INT player_id FK
+INT tournament_id FK
+DATE registration_date
+INT final_rank
+}
+
+
+MATCHES {
+INT match_id PK
+INT tournament_id FK
+INT player1_id FK
+INT player2_id FK
+DATE match_date
+INT player1_score
+INT player2_score
+INT winner_id FK
+}
+
+
+PLAYERS ||--o{ PARTICIPANTS : "registers"
+TOURNAMENTS ||--o{ PARTICIPANTS : "has"
+
+
+TOURNAMENTS ||--o{ MATCHES : "includes"
+PLAYERS ||--o{ MATCHES : "as player1"
+PLAYERS ||--o{ MATCHES : "as player2"
+PLAYERS ||--o{ MATCHES : "as winner"
