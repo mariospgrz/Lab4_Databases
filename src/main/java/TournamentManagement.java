@@ -9,6 +9,34 @@ public class TournamentManagement {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "user@mysql";
 
+public static void main(String[] args) {
+    tournamentMenu();
+}
+
+public static void tournamentMenu() {
+    Scanner input = new Scanner(System.in);
+    while (true) {
+        System.out.println("TOURNAMENT MANAGEMENT MENU");
+        System.out.println("1. Create Tournament");
+        System.out.println("2. Display Tournaments");
+        System.out.println("3. Select Tournament using ID");
+        System.out.println("4. View Tournaments suing Status");
+        System.out.println("5. View Players Participating in a Tournament");
+        System.out.println("6. Return");
+        System.out.print("Enter your choice: ");
+        int choice = input.nextInt();
+        switch (choice) {
+            case 1: CreateTournament(); break;
+            case 2: DisplayTournaments(); break;
+            case 3: SelectTournamentByID(); break;
+            case 4: ViewByStatus(); break;
+            case 5: PlayerParticipating(); break;
+            case 6: return;
+            default: System.out.println("Invalid choice.Try again.");
+        }
+    }
+}
+
     public static void CreateTournament() {
 try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD); Statement statement = connection.createStatement()) {
         String tournamentName;
@@ -20,15 +48,15 @@ try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD
         System.out.println("Enter the attributes of the tournament");
         Scanner scanner = new Scanner(System.in);
         try {
-            System.err.println("Enter tournament name:");
+            System.out.println("Enter tournament name:");
             tournamentName = scanner.nextLine();
-            System.err.println("Enter tournament ID:");
+            System.out.println("Enter tournament ID:");
             tournamentID = Integer.parseInt(scanner.nextLine());
-            System.err.println("Enter start date (yyyy-MM-dd):");
+            System.out.println("Enter start date (yyyy-MM-dd):");
             start_date = new SimpleDateFormat("yyyy-MM-dd").parse(scanner.nextLine());
-            System.err.println("Enter end date (yyyy-MM-dd):");
+            System.out.println("Enter end date (yyyy-MM-dd):");
             end_date = new SimpleDateFormat("yyyy-MM-dd").parse(scanner.nextLine());
-            System.err.println("Enter max participants:");
+            System.out.println("Enter max participants:");
             max_participants = Integer.parseInt(scanner.nextLine());
             // Check if tournament ID already exists
             if (tournamentIDExists(tournamentID)) {
