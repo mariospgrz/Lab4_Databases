@@ -1,4 +1,3 @@
-package app;
 /* This class is used to connect to the database Lab4_db */
 
 import java.sql.Connection;
