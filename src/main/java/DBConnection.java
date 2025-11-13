@@ -19,26 +19,27 @@ public class DBConnection {
             System.out.println("Connection failed!");
             e.printStackTrace();
         }
+    int choice = 0;
+    while (choice != 4) {
     System.out.println("MENU");
     System.out.println("1.Mangage Players");
     System.out.println("2.Manage Tournaments");
     System.out.println("3.Manage Matches");
     System.out.println("4.Exit");
-    System.out.println("Enter your choice: ");
-    int choice = input.nextInt();
-    }
+    System.out.println("Enter your choice:");
+    choice = input.nextInt();
+    
     if(choice == 1){
-        PlayerManagement.playerMenu();
+
     } else if (choice == 2) {
         TournamentManagement.tournamentMenu();
     } else if (choice == 3) {
-        MatchManagement.matchMenu();
     } else if (choice == 4) {
         System.out.println("Exited");
         System.exit(0);
     } else {
         System.out.println("Invalid choice.Try again.");
     }
-}
+}}}
 
 

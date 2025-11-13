@@ -2,6 +2,8 @@ import java.util.*;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.time.LocalDate;
+
 
 
 public class TournamentManagement {
@@ -9,13 +11,11 @@ public class TournamentManagement {
     private static final String USERNAME = "root";
     private static final String PASSWORD = "user@mysql";
 
-public static void main(String[] args) {
-    tournamentMenu();
-}
-
 public static void tournamentMenu() {
     Scanner input = new Scanner(System.in);
     while (true) {
+        System.out.println();
+        System.out.println();
         System.out.println("TOURNAMENT MANAGEMENT MENU");
         System.out.println("1. Create Tournament");
         System.out.println("2. Display Tournaments");
@@ -39,11 +39,13 @@ public static void tournamentMenu() {
 
     public static void CreateTournament() {
 try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD); Statement statement = connection.createStatement()) {
+        LocalDate today = LocalDate.now();
         String tournamentName;
         Integer tournamentID;
         java.util.Date start_date;
         java.util.Date end_date;
         Integer max_participants;
+        boolean is_open = true;
         //Create a new tourament
         System.out.println("Enter the attributes of the tournament");
         Scanner scanner = new Scanner(System.in);
@@ -58,15 +60,21 @@ try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD
             end_date = new SimpleDateFormat("yyyy-MM-dd").parse(scanner.nextLine());
             System.out.println("Enter max participants:");
             max_participants = Integer.parseInt(scanner.nextLine());
+            if(end_date.before(java.sql.Date.valueOf(today))){
+                System.out.println("Tournament has ended");
+                is_open = false;
+            }
             // Check if tournament ID already exists
             if (tournamentIDExists(tournamentID)) {
                 System.out.println("Error: Tournament ID " + tournamentID + " is already being used!");
                 return;
             }
             // Insert the new tournament into the database
-            statement.executeUpdate("INSERT INTO tournaments (tournament_id, tournament_name, start_date, end_date, max_participants) VALUES (" + tournamentID + ", '" + tournamentName + "', '" + new java.sql.Date(start_date.getTime()) + "', '" + new java.sql.Date(end_date.getTime()) + "', " + max_participants + ")");
+            statement.executeUpdate("INSERT INTO tournaments (tournament_id, name, start_date, end_date, max_participants , is_open) VALUES (" + tournamentID + ", '" + tournamentName + "', '" + new java.sql.Date(start_date.getTime()) + "', '" + new java.sql.Date(end_date.getTime()) + "', " + max_participants + ", " + is_open + ")");
         } catch (Exception e) {
             System.out.println("Invalid input. Try again.");
+            System.out.println("Something went wrong: " + e.getMessage());
+            e.printStackTrace();
             return;
         }
         System.out.println("Tournament " + " created successfully!");
@@ -103,16 +111,16 @@ try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query)) {
             
-            System.out.printf("Tournament ID" + "|" +  "Tournament Name" + "|" +   "Start Date" + "|" +  "End Date" + "|" +  "Max Participants");
-            
+            System.out.printf("Tournament ID" + "|" +  "Name" + "|" +   "Start Date" + "|" +  "End Date" + "|" +  "Max Participants " + "|" + "Is Open\n");
             while (rs.next()) {
                 int id = rs.getInt("tournament_id");
-                String name = rs.getString("tournament_name");
+                String name = rs.getString("name");
                 Date startDate = rs.getDate("start_date");
                 Date endDate = rs.getDate("end_date");
                 int maxParticipants = rs.getInt("max_participants");
-                
-                System.out.printf(id + "|" +  name + "|" + startDate.toString()+ "|" +  endDate.toString() + "|" + maxParticipants);
+                Boolean isOpen = rs.getBoolean("is_open");
+                System.out.println();
+                System.out.printf(id + "|" +  name + "|" + startDate.toString()+ "|" +  endDate.toString() + "|" + maxParticipants + "|" + isOpen);
             }
             
         } catch (SQLException e) {
@@ -129,16 +137,17 @@ try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD
             Statement statement = connection.createStatement()) {
 
             ResultSet rs = statement.executeQuery(query);
-            System.out.printf("Tournament ID" + "|" +  "Tournament Name" + "|" +   "Start Date" + "|" +  "End Date" + "|" +  "Max Participants");
-
+            System.out.printf("Tournament ID" + "|" +  "Name" + "|" +   "Start Date" + "|" +  "End Date" + "|" +  "Max Participants" + "|" + "Is Open\n");
             if (rs.next()) {
                 int id = rs.getInt("tournament_id");
-                String name = rs.getString("tournament_name");
+                String name = rs.getString("name");
                 Date startDate = rs.getDate("start_date");
                 Date endDate = rs.getDate("end_date");
                 int maxParticipants = rs.getInt("max_participants");
-                
-                System.out.printf(id + "|" +  name + "|" + startDate.toString()+ "|" +  endDate.toString() + "|" + maxParticipants);
+                Boolean isOpen = rs.getBoolean("is_open");
+                System.out.println();
+    
+                System.out.printf(id + "|" +  name + "|" + startDate.toString()+ "|" +  endDate.toString() + "|" + maxParticipants + "|" + isOpen);
             } else {
                 System.out.println("Tournament with ID " + tournamentID + " not found.");
             }
@@ -154,21 +163,23 @@ public static void ViewByStatus(){
     System.out.println("Enter the status of the tournaments you want to view(TRUE/FALSE)");
     Scanner scanner = new Scanner(System.in);
     boolean status = Boolean.parseBoolean(scanner.nextLine());
-    String query = "SELECT * FROM tournaments WHERE is_active =" + status;
+    String query = "SELECT * FROM tournaments WHERE is_open =" + status;
     try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
         Statement statement = connection.createStatement()) {
         ResultSet rs = statement.executeQuery(query);
 
-        System.out.printf("Tournament ID" + "|" +  "Tournament Name" + "|" +   "Start Date" + "|" +  "End Date" + "|" +  "Max Participants");
+        System.out.printf("Tournament ID" + "|" +  "Name" + "|" +   "Start Date" + "|" +  "End Date" + "|" +  "Max Participants" + "|" + "Is Open\n");
 
             if (rs.next()) {
                 int id = rs.getInt("tournament_id");
-                String name = rs.getString("tournament_name");
+                String name = rs.getString("name");
                 Date startDate = rs.getDate("start_date");
                 Date endDate = rs.getDate("end_date");
                 int maxParticipants = rs.getInt("max_participants");
-                
-                System.out.printf(id + "|" +  name + "|" + startDate.toString()+ "|" +  endDate.toString() + "|" + maxParticipants);
+                Boolean isOpen = rs.getBoolean("is_open");
+                System.out.println();
+
+                System.out.printf(id + "|" +  name + "|" + startDate.toString()+ "|" +  endDate.toString() + "|" + maxParticipants + "|" + isOpen);
             } else {
                 System.out.println("No Tournaments found.");
             }
