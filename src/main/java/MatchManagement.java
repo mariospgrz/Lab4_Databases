@@ -1,5 +1,4 @@
 import java.sql.*;
-import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
@@ -105,6 +104,25 @@ public class MatchManagement {
                 else ps.setInt(8, winner);
 
                 ps.executeUpdate();
+                
+                // Update win/loss counts for players when there's a winner
+                if (winner != null) {
+                    // Increment winner's total_wins
+                    String updateWinner = "UPDATE players SET total_wins = total_wins + 1 WHERE player_id = ?";
+                    try (PreparedStatement psWinner = c.prepareStatement(updateWinner)) {
+                        psWinner.setInt(1, winner);
+                        psWinner.executeUpdate();
+                    }
+                    
+                    // Increment loser's total_losses
+                    int loser = (winner == p1) ? p2 : p1;
+                    String updateLoser = "UPDATE players SET total_losses = total_losses + 1 WHERE player_id = ?";
+                    try (PreparedStatement psLoser = c.prepareStatement(updateLoser)) {
+                        psLoser.setInt(1, loser);
+                        psLoser.executeUpdate();
+                    }
+                }
+                
                 System.out.println("✔ Match created.");
             }
         } catch (NumberFormatException e) {

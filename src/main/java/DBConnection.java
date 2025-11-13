@@ -7,9 +7,9 @@ import java.util.Scanner;
 public class DBConnection {
 
     // ====== EDIT THESE IF NEEDED ======
-    public static final String URL = "jdbc:mysql://localhost:3306/lab4_db?useSSL=false&serverTimezone=UTC";
+    public static final String URL = "jdbc:mysql://localhost:3306/lab4_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     public static final String USERNAME = "root";
-    public static final String PASSWORD = "user@mysql";
+    public static final String PASSWORD = "I@M@VERYN1CEPERSON";
     // ==================================
 
     public static void main(String[] args) {
