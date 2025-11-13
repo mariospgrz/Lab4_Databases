@@ -91,7 +91,7 @@ MODIFY player2_id INT NOT NULL,
 ADD CONSTRAINT ScoreNotNeg CHECK (player1_score >= 0 AND player2_score >= 0);
 
 DELIMITER // #had to make the trigger to check if the players matched because the constrained we used in the alter table keptmaking errors in the later steps of TASK2
-		     #so we used chatgpt for insight on this trigger query
+		         #so we used chatgpt for insight on this trigger query
 CREATE TRIGGER PlayersMatched
 BEFORE INSERT ON matches FOR EACH ROW
 BEGIN IF NEW.player1_id = NEW.player2_id THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Players Can not be the same'; END IF;
@@ -107,12 +107,12 @@ ADD CONSTRAINT matches_ibfk_3 FOREIGN KEY (player2_id) REFERENCES players(player
 
 -- Κάνουμε drop τα παλιά foreign keys, γιατί η MYSQL δεν επιτρέπει να αλλάξεις  ON DELETE/UPDATE 
 -- αν δεν κάνεις πρώτα DROP το foreign key.
-ALTER TABLE participants 
+ALTER TABLE participants
 	DROP FOREIGN KEY participants_ibfk_1,
 	DROP FOREIGN KEY participants_ibfk_2;
     
 -- Ξαναδημιουργώ τα foreign keys.
- ALTER TABLE participants
+ALTER TABLE participants
 	ADD CONSTRAINT UP_DEL_participants_players FOREIGN KEY (player_id) REFERENCES players(player_id)
     ON DELETE CASCADE -- Αν σβηστεί παίκτης / σβήνονται οι συμμετοχές του
     ON UPDATE CASCADE, -- Αν αλλάξει το player_id / Ενημερώνονται οι συμμετοχές
