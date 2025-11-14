@@ -32,6 +32,7 @@ CEI325 – Lab 4: Tournament Platform
 ├── erd/
 │ ├── Erd.png
 │ └── Erd code.mmd
+| └── README.md
 │
 ├── lib/
 │ └── mysql-connector-j.jar
@@ -48,8 +49,6 @@ CEI325 – Lab 4: Tournament Platform
 │ ├── TournamentManagement.java # Tournament management menu
 │ ├── ParticipantManagement.java # Participant management menu
 │ └── MatchManagement.java # Match management menu
-│
-└── README.md
 
 4. Ρυθμίσεις Σύνδεσης (DBConnection.java)
 
